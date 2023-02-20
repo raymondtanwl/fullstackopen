@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
-import axios from "axios";
+import personService from "./services/persons-service";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -21,24 +21,65 @@ const App = () => {
     setFilter(event.target.value);
   };
 
-  const addEntry = (event) => {
+  const addOrEditEntry = (event) => {
     event.preventDefault();
+    const existingIndex = persons.findIndex(
+      (a) => a.name.toLowerCase() === newName.toLowerCase()
+    );
     // add entry when not found
-    if (persons.map((p) => p.name).indexOf(newName) === -1) {
-      setPersons([
-        ...persons,
-        { name: newName, number: newNum, id: persons.length + 1 },
-      ]);
-      // clear input
-      setNewName("");
-      setNewNum("");
+    if (existingIndex === -1) {
+      addEntry();
     } else {
-      alert(`${newName} is already added to the phonebook`);
+      editEntry(existingIndex);
+    }
+  };
+
+  const addEntry = () => {
+    const newPerson = {
+      name: newName,
+      number: newNum,
+      id: persons[persons.length - 1].id + 1,
+    };
+
+    personService.create(newPerson).then((response) => {
+      setPersons([...persons, newPerson]);
+    });
+
+    // clear input
+    setNewName("");
+    setNewNum("");
+  };
+
+  const editEntry = (existingIndex) => {
+    const editedPerson = persons[existingIndex];
+    editedPerson.number = newNum;
+    const confirmEdit = window.confirm(
+      `${editedPerson.name} is already added to the phonebook, replace the old number with the new one?`
+    );
+
+    if (confirmEdit) {
+      personService.update(editedPerson.id, editedPerson).then((edited) => {
+        persons[existingIndex] = editedPerson;
+        setPersons([...persons]);
+        alert(`${editedPerson.name}'s number has been updated.`);
+      });
+    }
+  };
+
+  const deleteEntry = (person) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want delete ${person.name}?`
+    );
+    if (confirmDelete) {
+      personService.deletePerson(person.id).then((deleted) => {
+        setPersons(persons.filter((p) => p.id !== person.id));
+        alert(`${person.name} is deleted from the phonebook.`);
+      });
     }
   };
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+    personService.getAll().then((response) => {
       setPersons(response.data);
     });
   }, []);
@@ -50,7 +91,7 @@ const App = () => {
 
       <h3>Add a new</h3>
       <PersonForm
-        addEntry={addEntry}
+        addOrEditEntry={addOrEditEntry}
         newName={newName}
         newNum={newNum}
         updateName={handleNameChange}
@@ -58,7 +99,11 @@ const App = () => {
       ></PersonForm>
 
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={filter}></Persons>
+      <Persons
+        persons={persons}
+        filter={filter}
+        handleDelete={deleteEntry}
+      ></Persons>
     </div>
   );
 };
