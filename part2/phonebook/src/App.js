@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import axios from "axios";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -35,6 +36,12 @@ const App = () => {
       alert(`${newName} is already added to the phonebook`);
     }
   };
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
 
   return (
     <div>
