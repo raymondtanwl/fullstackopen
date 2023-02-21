@@ -1,7 +1,22 @@
 const express = require("express");
 const app = express();
-
 app.use(express.json());
+const morgan = require("morgan");
+app.use(
+  morgan(function (tokens, req, res) {
+    console.log("req", req);
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      JSON.stringify(req.body),
+    ].join(" ");
+  })
+);
 
 let persons = [
   {
@@ -111,7 +126,7 @@ app.get("/info", (request, response) => {
   `);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
