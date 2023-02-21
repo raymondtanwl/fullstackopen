@@ -43,15 +43,14 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNum,
-      id: persons[persons.length - 1].id + 1,
     };
 
     personService
       .create(newPerson)
       .then((response) => {
-        setPersons([...persons, newPerson]);
+        setPersons([...persons, response.data]);
         invokeNotification({
-          message: `Added ${newPerson.name}`,
+          message: `Added ${response.data.name}`,
           type: EnumNotifType.SuccessNotif,
         });
 
@@ -61,7 +60,8 @@ const App = () => {
       })
       .catch((error) => {
         invokeNotification({
-          message: `Error adding ${newPerson.name}`,
+          // message: `Error adding ${newPerson.name}`,
+          message: `${error.response.data.error}`,
           type: EnumNotifType.ErrorNotif,
         });
       });
@@ -78,16 +78,17 @@ const App = () => {
       personService
         .update(editedPerson.id, editedPerson)
         .then((edited) => {
-          persons[existingIndex] = editedPerson;
+          persons[existingIndex] = edited.data;
           setPersons([...persons]);
           invokeNotification({
-            message: `${editedPerson.name}'s number has been updated.`,
+            message: `${edited.data.name}'s number has been updated.`,
             type: EnumNotifType.SuccessNotif,
           });
         })
         .catch((error) => {
           invokeNotification({
-            message: `Error editing ${editedPerson.name}'s number`,
+            // message: `Error editing ${editedPerson.name}'s number`,
+            message: `${error.response.data.error}`,
             type: EnumNotifType.ErrorNotif,
           });
         });
@@ -110,7 +111,8 @@ const App = () => {
         })
         .catch((error) => {
           invokeNotification({
-            message: `Information of ${person.name} has already been removed from server`,
+            // message: `Information of ${person.name} has already been removed from server`,
+            message: `${error.response.data.error}`,
             type: EnumNotifType.ErrorNotif,
           });
         });

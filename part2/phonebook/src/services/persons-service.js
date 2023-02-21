@@ -1,5 +1,5 @@
 import axios from "axios";
-// const baseUrl = "http://localhost:3001/persons";
+// const baseUrl = "http://localhost:3001/api/persons";
 // relative path due to serving from same instance and using same domain
 const baseUrl = "/api/persons";
 
