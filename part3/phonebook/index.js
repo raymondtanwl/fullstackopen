@@ -119,10 +119,12 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 app.get("/info", (request, response) => {
-  response.write(`
-    <p>Phonebook has info for ${persons.length} people</p>
-    <p>${new Date().toString()}</p>
-  `);
+  response.setHeader("Content-Type", "text/html");
+
+  response.write(`<p>Phonebook has info for ${persons.length} people</p>`);
+  response.write(`<p>${new Date().toString()}</p>`);
+
+  response.end();
 });
 
 const PORT = process.env.PORT || 3001;
