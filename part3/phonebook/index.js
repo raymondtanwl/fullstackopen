@@ -4,7 +4,6 @@ app.use(express.json());
 const morgan = require("morgan");
 app.use(
   morgan(function (tokens, req, res) {
-    console.log("req", req);
     return [
       tokens.method(req, res),
       tokens.url(req, res),
