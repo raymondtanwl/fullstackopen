@@ -7,3 +7,16 @@ content-type: application/json
   "url": "www.example.com",
   "likes": 5
 }
+
+###
+
+POST http://localhost:3003/api/blogs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RfbmFtZSIsImlkIjoiNjNmODZhZGU2M2RkYzAxODZhNzRmYzg4IiwiaWF0IjoxNjc3MjMwNTUxfQ.4ILs5QSZkk0dnbzohD3VyA6Tt6E8nnwQIdWITYjt7PU
+content-type: application/json
+
+{
+  "title": "Test Add Blog",
+  "author": "John Doe",
+  "url": "www.example.com",
+  "likes": 3
+}

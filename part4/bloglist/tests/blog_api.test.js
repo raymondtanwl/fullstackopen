@@ -4,6 +4,10 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 const helper = require('./test_helper')
+const bcrypt = require('bcrypt')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+const config = require('../utils/config')
 
 beforeEach(async () => {
   console.log('Resetting test data...')
@@ -34,15 +38,51 @@ describe('sanity check on blogs', () => {
 })
 
 describe('create new blog', () => {
-  test('new blog created correctly', async () => {
+  // eslint-disable-next-line no-unused-vars
+  let token = null
+  beforeAll(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('abc123', 10)
+    const user = await new User({
+      username: 'test_name',
+      name: 'Test Name',
+      passwordHash
+    }).save()
+
+    const userForToken = { username: 'test_name', id: user.id }
+    return (token = jwt.sign(userForToken, config.SECRET))
+  })
+
+  test('new blog created without providing token', async () => {
     const newBlog = {
       title: 'Blog this',
       author: 'Allison',
       url: 'https://www.test.com',
       likes: 1,
     }
-    await api.post('/api/blogs').send(newBlog)
-      .expect(201).expect('Content-Type', /application\/json/)
+    await api.post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    // verify untouched
+    const totalBlogsResponse = await api.get('/api/blogs')
+    expect(totalBlogsResponse.body).toHaveLength(helper.testBlogsArray.length)
+  })
+
+  test('new blog created by authorised user', async () => {
+    const newBlog = {
+      title: 'Blog this',
+      author: 'Allison',
+      url: 'https://www.test.com',
+      likes: 1,
+    }
+    await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
     // verify length
     const totalBlogsResponse = await api.get('/api/blogs')
@@ -59,8 +99,11 @@ describe('create new blog', () => {
       author: 'Kerry',
       url: 'https://www.testing.com',
     }
-    await api.post('/api/blogs').send(newBlog)
-      .expect(201).expect('Content-Type', /application\/json/)
+    await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
     const totalBlogsResponse = await api.get('/api/blogs')
     expect(totalBlogsResponse.body).toHaveLength(helper.testBlogsArray.length + 1)
@@ -73,7 +116,9 @@ describe('create new blog', () => {
       url: 'https://www.ahmad.com',
       likes: 1,
     }
-    await api.post('/api/blogs').send(newBlog)
+    await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
       .expect(400)
   })
 
@@ -83,16 +128,66 @@ describe('create new blog', () => {
       author: 'Erina',
       likes: 1,
     }
-    await api.post('/api/blogs').send(newBlog)
+    await api.post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
       .expect(400)
   })
-
 })
 
 describe('delete a blog', () => {
+  // eslint-disable-next-line no-unused-vars
+  let token = null
+  beforeAll(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('abc123', 10)
+    const user = await new User({
+      username: 'test_name',
+      name: 'Test Name',
+      passwordHash
+    }).save()
+
+    const tokenObj = { username: 'test_name', id: user.id }
+    token = jwt.sign(tokenObj, config.SECRET)
+    // console.log('token', token)
+    return token
+  })
+
+  beforeEach(async () => {
+    // insert new blog for testing deletion
+    const newBlog = {
+      title: 'A guide to blogging',
+      author: 'John Doe',
+      url: 'https://www.guidetoblog.com',
+    }
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('delete by invalid user', async () => {
+    const initialBlogs = await api.get('/api/blogs')
+    const blogIdToDelete = initialBlogs.body[initialBlogs.body.length - 1].id
+    // console.log('blogIdToDelete', blogIdToDelete)
+    await api.delete(`/api/blogs/${blogIdToDelete}`)
+      .set('Authorization', `Bearer ${token}xyz`)
+      .expect(401)
+
+    // verify blogs is untouched
+    const totalBlogsResponse = await api.get('/api/blogs')
+    expect(totalBlogsResponse.body).toHaveLength(initialBlogs.body.length)
+  })
+
   test('check if blog is deleted', async () => {
-    const blogIdToDelete = '5a422a851b54a676234d17f7'
-    await api.delete(`/api/blogs/${blogIdToDelete}`).expect(204)
+    const initialBlogs = await api.get('/api/blogs')
+    const blogIdToDelete = initialBlogs.body[initialBlogs.body.length - 1].id
+    await api.delete(`/api/blogs/${blogIdToDelete}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204)
 
     // verify blog has been deleted
     const totalBlogsResponse = await api.get('/api/blogs')
