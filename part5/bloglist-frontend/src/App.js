@@ -1,24 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/Login'
 import Notification, { EnumNotifType } from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
+  const [loginVisible, setLoginVisible] = useState(false)
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMsg, setErrorMessage] = useState(null)
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
-  
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -30,14 +30,16 @@ const App = () => {
     }
   }, [])
 
+  const blogFormRef = useRef()
+
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
       })
-      window.localStorage.setItem('loggedInUser', JSON.stringify(user)) 
+      window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -56,24 +58,17 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    
+  const addBlog = async (newBlog) => {
     try {
-      const newBlog = {
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogUrl
-      }
       const response = await blogService.create(newBlog)
       // console.log('blog created response', response)
+      setBlogs(blogs.concat(response))
       invokeNotification({
         message: `A new blog ${response.title} by ${response.author} added`,
         type: EnumNotifType.SuccessNotif,
       })
-      setBlogTitle('')
-      setBlogAuthor('')
-      setBlogUrl('')
+
+      blogFormRef.current.toggleVisibility()
     } catch (error) {
       invokeNotification({
         message: `${error.response.data.error}`,
@@ -82,46 +77,66 @@ const App = () => {
     }
   }
 
-  const updateTitle = (event) => {
-    setBlogTitle(event.target.value);
-  }
-  const updateAuthor = (event) => {
-    setBlogAuthor(event.target.value);
-  }
-  const updateUrl = (event) => {
-    setBlogUrl(event.target.value);
+  const addLikes = async (blog) => {
+    // console.log('addLikes', blog)
+    try {
+      const newBlog = {
+        title: blog.title,
+        author: blog.author,
+        url: blog.url,
+        likes: blog.likes,
+        user: blog.user.id
+      }
+      await blogService.update(blog.id, newBlog)
+      // console.log('updated blogs >', blogs)
+    } catch(error) {
+      invokeNotification({
+        message: `${error.response.data.error}`,
+        type: EnumNotifType.ErrorNotif,
+      })
+    }
   }
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
+  const removeBlog = async (blog) => {
+    console.log('removeBlog', blog)
+    await blogService.remove(blog.id)
+
+    // update array
+    const afterDeletionBlogs = blogs.filter(b => b.id !== blog.id)
+    setBlogs(afterDeletionBlogs)
+
+    window.confirm(`Removed blog ${blog.title} by ${blog.author}`)
+  }
+
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+    return (
       <div>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>log in</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
       </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
+    )
+  }
 
   const invokeNotification = (errorObj) => {
-    setErrorMessage({ message: errorObj.message, type: errorObj.type });
+    setErrorMessage({ message: errorObj.message, type: errorObj.type })
     setTimeout(() => {
-      setErrorMessage(null);
-    }, 5000);
-  };
+      setErrorMessage(null)
+    }, 5000)
+  }
 
   return (
     <div>
@@ -131,23 +146,28 @@ const App = () => {
 
       <Notification errorMessage={errorMsg}></Notification>
 
-      {user && 
+      { user &&
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-          <BlogForm addNewBlog={addBlog}
-            blogTitle={blogTitle}
-            blogAuthor={blogAuthor}
-            blogUrl={blogUrl}
-            updateTitle={updateTitle}
-            updateAuthor={updateAuthor}
-            updateUrl={updateUrl}
-          ></BlogForm>
         </div>
       }
-      
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+
+      { user &&
+        <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+          <BlogForm addNewBlog={addBlog}></BlogForm>
+        </Togglable>
+      }
+
+      {
+        blogs.sort((a, b) => b.likes - a.likes)
+          .map(blog =>
+            <Blog
+              key={ blog.id } blog={ blog }
+              addLikes={addLikes} removeBlog={removeBlog}
+              loggedInUser={user}
+            />
+          )
+      }
     </div>
   )
 }

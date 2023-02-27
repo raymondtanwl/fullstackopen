@@ -1,7 +1,7 @@
 export const EnumNotifType = {
   SuccessNotif: 1,
   ErrorNotif: -1,
-};
+}
 const Notification = (props) => {
   if (
     props.errorMessage === null ||
@@ -9,13 +9,13 @@ const Notification = (props) => {
     props.errorMessage.message === undefined ||
     props.errorMessage.message.length === 0
   ) {
-    return null;
+    return null
   }
 
-  const { message, type } = props.errorMessage;
-  const notifStyle = type === EnumNotifType.ErrorNotif ? "error" : "success";
+  const { message, type } = props.errorMessage
+  const notifStyle = type === EnumNotifType.ErrorNotif ? 'error' : 'success'
 
-  return <div className={"notification " + notifStyle}>{message}</div>;
-};
+  return <div className={'notification ' + notifStyle}>{message}</div>
+}
 
-export default Notification;
+export default Notification
