@@ -23,13 +23,14 @@ blogsRouter.post('/', async (req, res) => {
     return res.status(401).json({ error: 'Invalid token' })
   }
   const user = req.user
+  // console.log('req.user', user)
 
   const blog = await new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes,
-    user: user.id
+    user: user._id.toString()
   })
 
   const savedBlog = await blog.save()

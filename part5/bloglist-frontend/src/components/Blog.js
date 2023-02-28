@@ -15,7 +15,7 @@ const Blog = ({ blog, addLikes, removeBlog, loggedInUser }) => {
   }
 
   const postCreatedByUser = () => {
-    if (!blog.user) return false
+    if (!blog.user || !loggedInUser) return false
     return (blog.user.username === loggedInUser.username)
   }
 
@@ -29,7 +29,7 @@ const Blog = ({ blog, addLikes, removeBlog, loggedInUser }) => {
           <a href={ blog.url }>{ blog.url }</a>
         </div>
         <div className="blog-likes">
-          likes { numOfLikes } <button onClick={processLikes}>like</button>
+          likes { numOfLikes } <button className="btn-like" onClick={processLikes}>like</button>
         </div>
         <div className="blog-author">
           { blog.author }

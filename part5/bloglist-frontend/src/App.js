@@ -26,7 +26,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      console.log('user', user)
+      // console.log('user', user)
       blogService.setToken(user.token)
     }
   }, [])
@@ -43,7 +43,7 @@ const App = () => {
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      console.log('user', user)
+      // console.log('handleLogin user', user)
       setUsername('')
       setPassword('')
     } catch (error) {
@@ -89,8 +89,13 @@ const App = () => {
         likes: blog.likes,
         user: blog.user.id
       }
-      await blogService.update(blog.id, newBlog)
+      const updatedBlog = await blogService.update(blog.id, newBlog)
       // console.log('updated blogs >', blogs)
+      // reorder list
+      const sortedBlogs = blogs.map((b) =>
+        b.id === blog.id ? updatedBlog : b
+      )
+      setBlogs(sortedBlogs)
     } catch(error) {
       invokeNotification({
         message: `${error.response.data.error}`,
@@ -100,7 +105,7 @@ const App = () => {
   }
 
   const removeBlog = async (blog) => {
-    console.log('removeBlog', blog)
+    // console.log('removeBlog', blog)
     await blogService.remove(blog.id)
 
     // update array
