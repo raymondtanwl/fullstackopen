@@ -21,20 +21,24 @@ const Blog = ({ blog, addLikes, removeBlog, loggedInUser }) => {
 
   let result = (
     <div key={blog.id} className="blog-item">
-      <div>{ blog.title } <button onClick={ () => setDetailVisible(!detailVisible) }>
+      <div className="title">{ blog.title } <button className="btn-view" onClick={ () => setDetailVisible(!detailVisible) }>
         { detailVisible ? 'hide' : 'view' }</button>
       </div>
-      <div style={ detailVisible ? showWhenVisible : hideWhenVisible }>
-        <a href={ blog.url }>{ blog.url }</a>
+      <div className="blog-details" style={ detailVisible ? showWhenVisible : hideWhenVisible }>
+        <div className="blog-url">
+          <a href={ blog.url }>{ blog.url }</a>
+        </div>
+        <div className="blog-likes">
+          likes { numOfLikes } <button onClick={processLikes}>like</button>
+        </div>
+        <div className="blog-author">
+          { blog.author }
+        </div>
+        <button className="btn-remove" style={ postCreatedByUser() ? showWhenVisible : hideWhenVisible }
+          onClick={ () => { removeBlog(blog) } }>
+            remove
+        </button>
       </div>
-      <div style={ detailVisible ? showWhenVisible : hideWhenVisible }>
-        likes { numOfLikes } <button onClick={processLikes}>like</button>
-      </div>
-      <div style={ detailVisible ? showWhenVisible : hideWhenVisible }>
-        { blog.author }
-      </div>
-      <button style={ detailVisible && postCreatedByUser() ? showWhenVisible : hideWhenVisible }
-        onClick={ () => { removeBlog(blog) } }>remove</button>
     </div>
   )
 
