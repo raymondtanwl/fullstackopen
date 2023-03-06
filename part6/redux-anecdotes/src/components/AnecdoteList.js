@@ -3,7 +3,15 @@ import { voteAnecdote } from "../reducers/anecdoteReducer"
 
 const AnecdoteList = () => {
   // useSelector either searches for or selects data from the Redux store
-  const anecdotes = useSelector(state => state)
+  // const anecdotes = useSelector(state => state)
+  const anecdotes = useSelector(state => {
+    // console.log('AnecdoteList useSelector', state)
+    if (state.filter === 'ALL') {
+      return state.anecdotes
+    } else {
+      return state.anecdotes.filter(a => a.content.toLowerCase().includes(state.filter))
+    }
+  })
   // useDispatch provide access to the dispatch function of the Redux store in index.js
   const dispatch = useDispatch()
 
