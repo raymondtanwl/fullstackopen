@@ -1,27 +1,24 @@
 import { useDispatch } from "react-redux"
-// import { createAnecdote } from "../reducers/anecdoteReducer"
+import { createAnecdote } from "../reducers/anecdoteReducer"
+import { setNotification } from "../reducers/notificationReducer"
 
 const AnecdoteForm = () => {
 
   // useDispatch provide access to the dispatch function of the Redux store in index.js
   const dispatch = useDispatch()
 
-  const addNewAnecdote = (event) => {
+  const addNewAnecdote = async (event) => {
     event.preventDefault()
     // uncontrolled component keeps the source of truth in the DOM
     const content = event.target.anecdoteText.value
     event.target.anecdoteText.value = ''
-    // dispatch(createAnecdote(content))
-    dispatch({ type: 'anecdotes/createAnecdote', payload: content })
-    _invokeNotification(content)
-  }
 
-  // set and remove notification after 5s
-  const _invokeNotification = (content) => {
-    dispatch({ type: 'notification/createdNotification', payload: content })
-    setTimeout(() => {
-      dispatch({ type: 'notification/removeNotification' })
-    }, 5000)
+    // dispatch(createAnecdote(content))
+    // dispatch({ type: 'anecdotes/createAnecdote', payload: content })
+
+    // const newAnecdote = await anecdoteService.createNew(content)
+    dispatch(createAnecdote(content))
+    dispatch(setNotification(`you created '${content}'`, 5))
   }
 
   return (

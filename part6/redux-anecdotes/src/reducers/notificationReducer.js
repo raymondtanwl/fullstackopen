@@ -9,13 +9,14 @@ const notificationSlice = createSlice({
     votedNotification(state, action) {
       // console.log('votedNotification state', state)
       // console.log('votedNotification action', action)
-      const notifMsg = `You voted '${action.payload.content}'`
+      const notifMsg = `You voted '${action.payload}'`
       return notifMsg
     },
     createdNotification(state, action) {
       // console.log('createdNotification state', state)
       // console.log('createdNotification action', action)
-      const notifMsg = `You created '${action.payload}'`
+      // const notifMsg = `You created '${action.payload}'`
+      const notifMsg = action.payload
       return notifMsg
     },
     removeNotification() {
@@ -31,4 +32,15 @@ export const {
   createdNotification, 
   removeNotification
 } = notificationSlice.actions
+
+export const setNotification = (notifMsg, sec) => {
+  return async dispatch => {
+    const timeOutSeconds = sec * 1000
+    dispatch(createdNotification(notifMsg))
+    setTimeout(() => {
+      dispatch(removeNotification())
+    }, timeOutSeconds)
+  }
+}
+
 export default notificationSlice.reducer
