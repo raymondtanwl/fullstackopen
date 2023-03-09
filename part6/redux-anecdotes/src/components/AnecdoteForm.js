@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux"
-import { createAnecdote } from "../reducers/anecdoteReducer"
+// import { createAnecdote } from "../reducers/anecdoteReducer"
 
 const AnecdoteForm = () => {
 
@@ -11,7 +11,17 @@ const AnecdoteForm = () => {
     // uncontrolled component keeps the source of truth in the DOM
     const content = event.target.anecdoteText.value
     event.target.anecdoteText.value = ''
-    dispatch(createAnecdote(content))
+    // dispatch(createAnecdote(content))
+    dispatch({ type: 'anecdotes/createAnecdote', payload: content })
+    _invokeNotification(content)
+  }
+
+  // set and remove notification after 5s
+  const _invokeNotification = (content) => {
+    dispatch({ type: 'notification/createdNotification', payload: content })
+    setTimeout(() => {
+      dispatch({ type: 'notification/removeNotification' })
+    }, 5000)
   }
 
   return (

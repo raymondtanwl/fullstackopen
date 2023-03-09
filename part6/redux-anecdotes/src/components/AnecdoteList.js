@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
-import { voteAnecdote } from "../reducers/anecdoteReducer"
+// import { voteAnecdote } from "../reducers/anecdoteReducer"
 
 const AnecdoteList = () => {
   // useSelector either searches for or selects data from the Redux store
@@ -15,8 +15,18 @@ const AnecdoteList = () => {
   // useDispatch provide access to the dispatch function of the Redux store in index.js
   const dispatch = useDispatch()
 
-  const vote = (id) => {
-    dispatch(voteAnecdote(id))
+  const vote = (anecdote) => {
+    // dispatch(voteAnecdote(id))
+    dispatch({ type: 'anecdotes/voteAnecdote', payload: anecdote.id })
+    _invokeNotification(anecdote.content)
+  }
+
+  // set and remove notification after 5s
+  const _invokeNotification = (content) => {
+    dispatch({ type: 'notification/createdNotification', payload: content })
+    setTimeout(() => {
+      dispatch({ type: 'notification/removeNotification' })
+    }, 5000)
   }
 
   return (
@@ -28,7 +38,7 @@ const AnecdoteList = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => vote(anecdote)}>vote</button>
           </div>
         </div>
       )}
