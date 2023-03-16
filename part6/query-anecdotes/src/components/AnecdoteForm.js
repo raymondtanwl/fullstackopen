@@ -1,7 +1,6 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import { setNotification } from "../App"
-// import { setNotification } from "../App"
 import NotifContext from "../context/notifContext"
 import { createAnecdote } from "../service/apiService"
 
@@ -17,7 +16,12 @@ const AnecdoteForm = () => {
       queryClient.invalidateQueries('anecdotes')
       const msg = `anecdote '${newAnecdote.content}' is created`
       setNotification(notifDispatch, msg)
-    }
+    },
+     onError: (error) => {
+      // console.log('error', error)
+      const errMsg = error.response.data.error
+      setNotification(notifDispatch, errMsg)
+     }
   })
 
   const onCreate = (event) => {

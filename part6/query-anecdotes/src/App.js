@@ -17,7 +17,7 @@ const App = () => {
   // mutations are typically used to create/update/delete data or perform server side-effects
   const voteAnecdoteMutation = useMutation(voteAnecdote, {
     onSuccess: (votedAnecdote) => {
-      console.log('useMutation voteAnecdote onSuccess', votedAnecdote)
+      // console.log('useMutation voteAnecdote onSuccess', votedAnecdote)
       // the name/key should be same as the one defined in useQuery('anecdotes')
       queryClient.invalidateQueries('anecdotes')
       const msg = `anecdote '${votedAnecdote.content}' is voted`
