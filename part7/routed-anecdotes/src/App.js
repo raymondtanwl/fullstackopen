@@ -1,112 +1,16 @@
 import { useState } from 'react'
 import {
   BrowserRouter as Router,
-  Routes, Route, Link, useParams, useNavigate
+  Routes, Route
 } from 'react-router-dom'
+import Menu from './components/Menu'
+import AnecdoteDetail from './components/AnecdoteDetail'
+import AnecdoteList from './components/AnecdoteList'
+import About from './components/About'
+import Footer from './components/Footer'
+import CreateNew from './components/CreateNew'
+import Notification from './components/Notification'
 
-const Menu = ({ toPage }) => {
-  const padding = {
-    paddingRight: 5
-  }
-  return (
-    <div>
-      {/* <a href='anecdotes' onClick={toPage('anecdotes')} style={padding}>anecdotes</a>
-      <a href='create-new' onClick={toPage('create-new')} style={padding}>create new</a>
-      <a href='about' onClick={toPage('about')} style={padding}>about</a> */}
-      <Link style={padding} to="/">anecdotes</Link>
-      <Link style={padding} to="/create">create new</Link>
-      <Link style={padding} to="/about">about</Link>
-    </div>
-  )
-}
-
-const AnecdoteList = ({ anecdotes }) => (
-  <div>
-    <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote =>
-        <Link key={anecdote.id} to={`/anecdote/${anecdote.id}`}>
-          <li>{anecdote.content}</li>
-        </Link>
-      )}
-    </ul>
-  </div>
-)
-
-const AnecdoteDetail = ({ anecdotes }) => {
-  const id = useParams().id
-  const anecdote = anecdotes.find(n => n.id === Number(id)) 
-  return (
-    <div>
-      <h2>{ anecdote.content } by { anecdote.author}</h2>
-      <p>has { anecdote.votes } votes</p>
-      <p>for more info please visit <a href={ anecdote.info }>{ anecdote.info }</a></p>
-    </div>
-  )
-}
-
-const About = () => (
-  <div>
-    <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
-
-    <em>An anecdote is a brief, revealing account of an individual person or an incident.
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
-
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
-  </div>
-)
-
-const Footer = () => (
-  <div>
-    Anecdote app for <a href='https://fullstackopen.com/'>Full Stack Open</a>.
-
-    See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js</a> for the source code.
-  </div>
-)
-
-const CreateNew = (props) => {
-  const navigate = useNavigate()
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
-      votes: 0
-    })
-    navigate('/')
-  }
-
-  return (
-    <div>
-      <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-        </div>
-        <div>
-          author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
-        </div>
-        <button>create</button>
-      </form>
-    </div>
-  )
-
-}
 
 const App = () => {
   const [page, setPage] = useState('home')
@@ -177,12 +81,6 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
 
-  const Notification = () => {
-    return notification ?
-    <div className='notification'>{ notification }</div>
-    : null
-  }
-
   return (
     <Router>
       <div>
@@ -195,7 +93,7 @@ const App = () => {
           <CreateNew addNew={addNew} /> */
         }
 
-        <Notification />
+        <Notification notification={notification} />
 
         <Routes>
           <Route path="/create" element={<CreateNew addNew={addNew} />} />
