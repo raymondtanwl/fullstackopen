@@ -14,22 +14,23 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [page, setPage] = useState('home')
+
   const toPage = (page) => (event) => {
     event.preventDefault()
     setPage(page)
   }
-  const renderContent = () => {
-    switch (page) {
-      case 'anecdotes':
-        return <AnecdoteList anecdotes={anecdotes} />
-      case 'create-new':
-        return <CreateNew addNew={addNew} />
-      case 'about':
-        return <About/>
-      default:
-        <AnecdoteList anecdotes={anecdotes} />
-    }
-  }
+  // const renderContent = () => {
+  //   switch (page) {
+  //   case 'anecdotes':
+  //     return <AnecdoteList anecdotes={anecdotes} />
+  //   case 'create-new':
+  //     return <CreateNew addNew={addNew} />
+  //   case 'about':
+  //     return <About/>
+  //   default:
+  //     <AnecdoteList anecdotes={anecdotes} />
+  //   }
+  // }
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -55,9 +56,9 @@ const App = () => {
 
     triggerNotification(`a new anecdote '${ anecdote.content }' is created!`)
     // causes error: useNavigate() may be used only in the context of a <Router> component.
-    // Due to this App component is not being wrapped by <Router>. 
+    // Due to this App component is not being wrapped by <Router>.
     // Solve by either wrapping <Router><App /></Router> in index.js or invoke in component one level down.
-    // navigate('/') 
+    // navigate('/')
   }
 
   const triggerNotification = (message) => {
@@ -67,27 +68,27 @@ const App = () => {
     }, 5000)
   }
 
-  const anecdoteById = (id) =>
-    anecdotes.find(a => a.id === id)
+  // const anecdoteById = (id) =>
+  //   anecdotes.find(a => a.id === id)
 
-  const vote = (id) => {
-    const anecdote = anecdoteById(id)
+  // const vote = (id) => {
+  //   const anecdote = anecdoteById(id)
 
-    const voted = {
-      ...anecdote,
-      votes: anecdote.votes + 1
-    }
+  //   const voted = {
+  //     ...anecdote,
+  //     votes: anecdote.votes + 1
+  //   }
 
-    setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
-  }
+  //   setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
+  // }
 
   return (
     <Router>
       <div>
         <h1>Software anecdotes</h1>
         <Menu toPage={toPage} />
-        { 
-          // renderContent() 
+        {
+          // renderContent()
           /* <AnecdoteList anecdotes={anecdotes} />
           <About />
           <CreateNew addNew={addNew} /> */

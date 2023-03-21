@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 const About = () => (
   <div>
     <h2>About anecdote app</h2>

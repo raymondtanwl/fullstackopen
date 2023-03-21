@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom'
 
-const Menu = ({ toPage }) => {
+// const Menu = ({ toPage }) => {
+const Menu = () => {
   const padding = {
     paddingRight: 5
   }
