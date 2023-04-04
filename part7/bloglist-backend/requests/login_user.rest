@@ -1,0 +1,18 @@
+POST http://localhost:3003/api/login
+content-type: application/json
+
+{
+  "username": "mluukkai",
+  "password": "salainen"
+}
+
+###
+
+POST http://localhost:3003/api/login
+content-type: application/json
+
+{
+  "username": "test_name",
+  "password": "abc123"
+}
+
