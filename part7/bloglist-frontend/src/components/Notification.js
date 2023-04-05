@@ -1,18 +1,16 @@
+import { useContext } from 'react'
+import NotifContext from '../context/notifContext'
+
 export const EnumNotifType = {
   SuccessNotif: 1,
   ErrorNotif: -1,
 }
-const Notification = (props) => {
-  if (
-    props.errorMessage === null ||
-    props.errorMessage.message === null ||
-    props.errorMessage.message === undefined ||
-    props.errorMessage.message.length === 0
-  ) {
-    return null
-  }
+const Notification = () => {
+  const [notifPayload] = useContext(NotifContext)
 
-  const { message, type } = props.errorMessage
+  if (!notifPayload) return null
+
+  const { message, type } = notifPayload
   const notifStyle = type === EnumNotifType.ErrorNotif ? 'error' : 'success'
 
   return <div className={'notification ' + notifStyle}>{message}</div>

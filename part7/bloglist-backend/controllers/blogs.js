@@ -55,7 +55,8 @@ blogsRouter.delete('/:id', async (req, res) => {
 
   if (blog.user.id.toString() === reqUser.id.toString()) {
     await Blog.deleteOne({ _id: id })
-    res.sendStatus(204).end()
+    // res.sendStatus(204).end()
+    res.status(200).json(blog) // return the deleted blog for frontend to display relevant notification
   } else {
     res.status(401).json({ error: 'Not authorized' })
   }
