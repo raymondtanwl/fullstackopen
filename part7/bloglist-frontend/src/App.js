@@ -6,18 +6,20 @@ import BlogForm from './components/BlogForm'
 import LoginForm from './components/Login'
 import Notification, { EnumNotifType } from './components/Notification'
 import Togglable from './components/Togglable'
+import LoginContext from './context/loginContext'
 import NotifContext, { setNotification } from './context/notifContext'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [notifPayload, notifDispatch] = useContext(NotifContext)
+  const [loginPayload, loginDispatch] = useContext(LoginContext)
   const queryClient = useQueryClient()
   const [loginVisible, setLoginVisible] = useState(false)
   // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
+  // const [user, setUser] = useState(null)
 
   // #region Blogs
   const handleAddBlog = (blog) => {
@@ -95,9 +97,10 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      // console.log('user', user)
       blogService.setToken(user.token)
+      // setUser(user)
+      loginDispatch({ type: 'LOGIN', data: user })
+      // console.log('user', user)
     }
   }, [])
 
@@ -112,7 +115,8 @@ const App = () => {
       })
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      // setUser(user)
+      loginDispatch({ type: 'LOGIN', data: user })
       // console.log('handleLogin user', user)
       setUsername('')
       setPassword('')
@@ -128,7 +132,8 @@ const App = () => {
   const handleLogout = () => {
     // console.log('handleLogout')
     window.localStorage.clear()
-    setUser(null)
+    // setUser(null)
+    loginDispatch({ type: 'LOGOUT' })
   }
 
 
@@ -155,38 +160,39 @@ const App = () => {
     )
   }
 
+  console.log('loginPayload', loginPayload)
+
   if (blogs.isLoading) {
     return <div>loading data...</div>
   }
 
   return (
     <div>
-      {!user && loginForm()}
+      {!loginPayload && loginForm()}
 
       <h2>blogs</h2>
 
       <Notification />
 
-      { user &&
+      { loginPayload &&
         <div>
-          <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+          <p>{loginPayload.name} logged in <button onClick={handleLogout}>logout</button></p>
         </div>
       }
 
-      { user &&
+      { loginPayload &&
         <Togglable buttonLabel="create new blog" ref={blogFormRef}>
           <BlogForm addNewBlog={handleAddBlog}></BlogForm>
         </Togglable>
       }
 
       {
-        blogs.data.sort((a, b) => b.likes - a.likes)
+        loginPayload && blogs.data.sort((a, b) => b.likes - a.likes)
           .map(blog =>
             <Blog
               key={ blog.id } blog={ blog }
               addLikes={handleLikeBlog}
               removeBlog={handleRemoveBlog}
-              loggedInUser={user}
             />
           )
       }

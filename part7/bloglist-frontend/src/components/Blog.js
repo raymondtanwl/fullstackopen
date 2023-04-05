@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import LoginContext from '../context/loginContext'
 
-const Blog = ({ blog, addLikes, removeBlog, loggedInUser }) => {
+const Blog = ({ blog, addLikes, removeBlog }) => {
+  const [loginPayload] = useContext(LoginContext)
   // console.log('Blog', blog)
   const [detailVisible, setDetailVisible] = useState(false)
   const [numOfLikes, setNumOfLikes] = useState(blog.likes)
@@ -15,8 +17,8 @@ const Blog = ({ blog, addLikes, removeBlog, loggedInUser }) => {
   }
 
   const postCreatedByUser = () => {
-    if (!blog.user || !loggedInUser) return false
-    return (blog.user.username === loggedInUser.username)
+    if (!blog.user || !loginPayload) return false
+    return (blog.user.username === loginPayload.username)
   }
 
   let result = (
