@@ -11,6 +11,7 @@ import Blogs from './components/Blogs'
 import LoginForm from './components/Login'
 import Notification, { EnumNotifType } from './components/Notification'
 import Togglable from './components/Togglable'
+import UserDetail from './components/UserDetail'
 import Users from './components/Users'
 import LoginContext from './context/loginContext'
 import NotifContext, { setNotification } from './context/notifContext'
@@ -203,6 +204,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Blogs />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<UserDetail />} />
         </Routes>
       </div>
     </Router>
