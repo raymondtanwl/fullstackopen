@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { useState, useContext } from 'react'
+import { Link } from 'react-router-dom'
 import LoginContext from '../context/loginContext'
 
 const Blog = ({ blog, addLikes, removeBlog }) => {
@@ -23,10 +25,13 @@ const Blog = ({ blog, addLikes, removeBlog }) => {
 
   let result = (
     <div key={blog.id} className="blog-item">
-      <div className="title">{ blog.title } <button className="btn-view" onClick={ () => setDetailVisible(!detailVisible) }>
-        { detailVisible ? 'hide' : 'view' }</button>
+      <div className="title">
+        <Link to={`/blogs/${blog.id}`}>{ blog.title }</Link>
+        {/* <button className="btn-view" onClick={ () => setDetailVisible(!detailVisible) }>
+          { detailVisible ? 'hide' : 'view' }
+        </button> */}
       </div>
-      <div className="blog-details" style={ detailVisible ? showWhenVisible : hideWhenVisible }>
+      {/* <div className="blog-details" style={ detailVisible ? showWhenVisible : hideWhenVisible }>
         <div className="blog-url">
           <a href={ blog.url }>{ blog.url }</a>
         </div>
@@ -40,7 +45,7 @@ const Blog = ({ blog, addLikes, removeBlog }) => {
           onClick={ () => { removeBlog(blog) } }>
             remove
         </button>
-      </div>
+      </div> */}
     </div>
   )
 

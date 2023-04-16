@@ -31,10 +31,10 @@ export const NotifContextProvider = (props) => {
 }
 
 // single method to invoke notification
-export const setNotification = (notifDispatch, notifPayload, ms = 4000) => {
-  notifDispatch({ type: 'CREATE', data: notifPayload })
+export const setNotification = (notifDispatcher, notifPayload, ms = 4000) => {
+  notifDispatcher({ type: 'CREATE', data: notifPayload })
   setTimeout(() => {
-    notifDispatch({ type: 'REMOVE' })
+    notifDispatcher({ type: 'REMOVE' })
   }, ms)
 }
 

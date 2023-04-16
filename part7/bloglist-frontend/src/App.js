@@ -6,6 +6,7 @@ import {
   Routes, Route
 } from 'react-router-dom'
 import Blog from './components/Blog'
+import BlogDetail from './components/BlogDetail'
 import BlogForm from './components/BlogForm'
 import Blogs from './components/Blogs'
 import LoginForm from './components/Login'
@@ -205,6 +206,7 @@ const App = () => {
           <Route path="/" element={<Blogs />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<UserDetail />} />
+          <Route path="/blogs/:id" element={<BlogDetail />} />
         </Routes>
       </div>
     </Router>

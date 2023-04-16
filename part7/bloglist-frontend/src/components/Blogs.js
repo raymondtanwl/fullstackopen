@@ -82,7 +82,8 @@ const Blogs = () => {
     refetchOnWindowFocus: false,
     retry: 1
   })
-  console.log('query res', blogs)
+  // console.log('query res', blogs)
+
   // #endregion Blogs
 
   if (blogs.isLoading) {
