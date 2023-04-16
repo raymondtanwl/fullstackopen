@@ -97,6 +97,17 @@ const BlogDetail = () => {
         onClick={ () => { handleRemoveBlog(blog) } }>
           remove
       </button>
+
+      <h2>comments</h2>
+      {
+        blog.comments.map(comment => {
+          return (
+            <li key={comment.id}>
+              {comment.text}
+            </li>
+          )
+        })
+      }
     </div>
   )
 }

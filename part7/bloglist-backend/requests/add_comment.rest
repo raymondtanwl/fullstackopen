@@ -1,0 +1,7 @@
+POST http://localhost:3003/api/blogs/642d2e08314d14c973b112b7/comments
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RfbmFtZSIsImlkIjoiNjNmODZhZGU2M2RkYzAxODZhNzRmYzg4IiwiaWF0IjoxNjc3MjMwNTUxfQ.4ILs5QSZkk0dnbzohD3VyA6Tt6E8nnwQIdWITYjt7PU
+content-type: application/json
+
+{
+  "text": "hello world comment"
+}
