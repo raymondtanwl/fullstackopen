@@ -10,6 +10,7 @@ import BlogDetail from './components/BlogDetail'
 import BlogForm from './components/BlogForm'
 import Blogs from './components/Blogs'
 import LoginForm from './components/Login'
+import NavMenu from './components/NavMenu'
 import Notification, { EnumNotifType } from './components/Notification'
 import Togglable from './components/Togglable'
 import UserDetail from './components/UserDetail'
@@ -136,12 +137,12 @@ const App = () => {
     }
   }
 
-  const handleLogout = () => {
-    // console.log('handleLogout')
-    window.localStorage.clear()
-    // setUser(null)
-    loginDispatch({ type: 'LOGOUT' })
-  }
+  // const handleLogout = () => {
+  //   // console.log('handleLogout')
+  //   window.localStorage.clear()
+  //   // setUser(null)
+  //   loginDispatch({ type: 'LOGOUT' })
+  // }
 
 
   const loginForm = () => {
@@ -167,21 +168,23 @@ const App = () => {
     )
   }
 
+  if (!loginPayload) return loginForm()
+
   return (
     <Router>
       <div>
-        {!loginPayload && loginForm()}
+        <NavMenu />
 
-        <h2>blogs</h2>
+        <h2>blog app</h2>
 
         <Notification />
 
-        { loginPayload &&
+        {/* { loginPayload &&
           <div>
             <p>{loginPayload.name} logged in</p>
             <button onClick={handleLogout}>logout</button>
           </div>
-        }
+        } */}
 
         {/* { loginPayload &&
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
