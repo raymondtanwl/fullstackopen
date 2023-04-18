@@ -25,12 +25,14 @@ const create = async newBlog => {
   return response.data
 }
 
-const addComment = async ({ id, commentText }) => {
+const addComment = async ({ blogId, commentText }) => {
+  // console.log('blogs.js addComment', blogId, commentText)
   const config = {
     headers: { Authorization: token },
   }
 
-  const response = await axios.post(`${baseUrl}/${id}/comment`, commentText, config)
+  // payload is expected to be { text: comment }
+  const response = await axios.post(`${baseUrl}/${blogId}/comments`, { text: commentText }, config)
   return response.data
 }
 

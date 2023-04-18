@@ -1,10 +1,12 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from 'react'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import LoginContext from '../context/loginContext'
 import NotifContext, { setNotification } from '../context/notifContext'
 import { EnumNotifType } from './Notification'
 import blogService from '../services/blogs'
+import Comments from './Comment'
 
 const BlogDetail = () => {
   // not specifying the first notifPayload param will cause the dispatch to be null
@@ -12,9 +14,10 @@ const BlogDetail = () => {
   // eslint-disable-next-line no-unused-vars
   const [notifPayload, notifDispatch] = useContext(NotifContext)
   const [loginPayload] = useContext(LoginContext)
-  // const queryClient = useQueryClient()
-  const [blog, setBlog] = useState('')
-  const [numOfLikes, setNumOfLikes] = useState(blog.likes)
+  const queryClient = useQueryClient()
+  // const [blog, setBlog] = useState('')
+  // const [numOfLikes, setNumOfLikes] = useState(blog.likes)
+  const [numOfLikes, setNumOfLikes] = useState(0)
 
   const navigate = useNavigate()
 
@@ -23,13 +26,13 @@ const BlogDetail = () => {
 
   const id = useParams().id
 
-  useEffect(() => {
-    blogService.getBlog(id).then(resBlog => {
-      // console.log('resBlog', resBlog)
-      setBlog(resBlog)
-      setNumOfLikes(resBlog.likes)
-    })
-  }, [])
+  // useEffect(() => {
+  //   blogService.getBlog(id).then(resBlog => {
+  //     // console.log('resBlog', resBlog)
+  //     setBlog(resBlog)
+  //     setNumOfLikes(resBlog.likes)
+  //   })
+  // }, [])
 
   const processLikes = () => {
     blog.likes += 1
@@ -83,31 +86,56 @@ const BlogDetail = () => {
 
   // #endregion Blog
 
-  if (!blog) {
+  const addComment = (data) => {
+    // console.log('addComment', data)
+    addCommentMutation.mutate({ blogId: blog.id, commentText: data.comment })
+  }
+
+  const addCommentMutation = useMutation(blogService.addComment, {
+    onSuccess: (newComment) => {
+      // console.log('newComment added', newComment)
+      queryClient.invalidateQueries('blog')
+    }
+  })
+
+  const blogRes = useQuery('blog', () => blogService.getBlog(id), {
+    refetchOnWindowFocus: false,
+    retry: 1
+  })
+  // console.log('query res blog', blogRes)
+
+  if (!blogRes || blogRes.isLoading) {
     return null
   }
+
+  const blog = blogRes.data
 
   return (
     <div>
       <h1>{blog.title}</h1>
       <a href={blog.url}>{blog.url}</a>
-      <div>{numOfLikes} likes <button className="btn-like" onClick={processLikes}>like</button></div>
+      <div>{blog.likes} likes <button className="btn-like" onClick={processLikes}>like</button></div>
       <div>added by {blog.author}</div>
       <button className="btn-remove" style={ postCreatedByUser() ? showWhenVisible : hideWhenVisible }
         onClick={ () => { handleRemoveBlog(blog) } }>
           remove
       </button>
 
-      <h2>comments</h2>
+      <Comments comments={blog.comments} handleAddComment={addComment}/>
+
+      {/* <h2>comments</h2>
+
+      <input></input> <button>add comment</button>
+
       {
-        blog.comments.map(comment => {
+        blog && blog.comments && blog.comments.map(comment => {
           return (
             <li key={comment.id}>
               {comment.text}
             </li>
           )
         })
-      }
+      } */}
     </div>
   )
 }
