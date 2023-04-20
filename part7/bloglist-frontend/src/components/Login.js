@@ -19,8 +19,8 @@ const LoginForm = ({
       <h2>Login</h2>
 
       <form>
-        <div className='login-form-fld'>
-          Username:
+        <div className='form-fld'>
+          <span className="label">Username:</span>
           <input
             type="text"
             placeholder='username'
@@ -29,8 +29,8 @@ const LoginForm = ({
             onChange={handleUsernameChange}
           />
         </div>
-        <div className='login-form-fld'>
-          Password:
+        <div className='form-fld'>
+          <span className="label">Password:</span>
           <input
             type="password"
             placeholder='********'

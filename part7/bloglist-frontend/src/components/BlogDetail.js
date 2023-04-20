@@ -120,7 +120,8 @@ const BlogDetail = () => {
         <Link to={`${blog.url}`}>{blog.url}</Link>
       </div>
       <div>
-        {blog.likes} likes <Button type="primary" icon={<LikeOutlined />} className="btn-like" onClick={processLikes}>Like</Button>
+        <span>{blog.likes} likes </span>
+        <Button type="primary" icon={<LikeOutlined />} className="btn-like" onClick={processLikes}>Like</Button>
       </div>
       <div>Added by {blog.author}</div>
       <div>
@@ -130,22 +131,8 @@ const BlogDetail = () => {
         </Button>
       </div>
 
-
       <Comments comments={blog.comments} handleAddComment={addComment}/>
 
-      {/* <h2>comments</h2>
-
-      <input></input> <button>add comment</button>
-
-      {
-        blog && blog.comments && blog.comments.map(comment => {
-          return (
-            <li key={comment.id}>
-              {comment.text}
-            </li>
-          )
-        })
-      } */}
     </div>
   )
 }

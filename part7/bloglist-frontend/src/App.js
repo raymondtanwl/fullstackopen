@@ -24,20 +24,15 @@ import loginService from './services/login'
 const App = () => {
   const [notifPayload, notifDispatch] = useContext(NotifContext)
   const [loginPayload, loginDispatch] = useContext(LoginContext)
-  const queryClient = useQueryClient()
   const [loginVisible, setLoginVisible] = useState(false)
-  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  // const [user, setUser] = useState(null)
-  // const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       blogService.setToken(user.token)
-      // setUser(user)
       loginDispatch({ type: 'LOGIN', data: user })
       // console.log('user', user)
     }
@@ -66,14 +61,6 @@ const App = () => {
     }
   }
 
-  // const handleLogout = () => {
-  //   // console.log('handleLogout')
-  //   window.localStorage.clear()
-  //   // setUser(null)
-  //   loginDispatch({ type: 'LOGOUT' })
-  // }
-
-
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? 'none' : '' }
     const showWhenVisible = { display: loginVisible ? '' : 'none' }
@@ -87,7 +74,6 @@ const App = () => {
           </Card>
         </div>
         <div style={showWhenVisible} className="login-card">
-
           <LoginForm
             username={username}
             password={password}

@@ -5,24 +5,24 @@ import { Link } from 'react-router-dom'
 import LoginContext from '../context/loginContext'
 
 const Blog = ({ blog, addLikes, removeBlog }) => {
-  const [loginPayload] = useContext(LoginContext)
+  // const [loginPayload] = useContext(LoginContext)
   // console.log('Blog', blog)
-  const [detailVisible, setDetailVisible] = useState(false)
-  const [numOfLikes, setNumOfLikes] = useState(blog.likes)
+  // const [detailVisible, setDetailVisible] = useState(false)
+  // const [numOfLikes, setNumOfLikes] = useState(blog.likes)
 
-  const hideWhenVisible = { display: 'none' }
-  const showWhenVisible = { display: '' }
+  // const hideWhenVisible = { display: 'none' }
+  // const showWhenVisible = { display: '' }
 
-  const processLikes = () => {
-    blog.likes += 1
-    setNumOfLikes(blog.likes)
-    addLikes(blog)
-  }
+  // const processLikes = () => {
+  //   blog.likes += 1
+  //   setNumOfLikes(blog.likes)
+  //   addLikes(blog)
+  // }
 
-  const postCreatedByUser = () => {
-    if (!blog.user || !loginPayload) return false
-    return (blog.user.username === loginPayload.username)
-  }
+  // const postCreatedByUser = () => {
+  //   if (!blog.user || !loginPayload) return false
+  //   return (blog.user.username === loginPayload.username)
+  // }
 
   // let result = (
   //   <div key={blog.id} className="blog-item">

@@ -28,7 +28,6 @@ const UserDetail = () => {
             <Card size="small" key={blog.id}>
               {blog.title}
             </Card>
-            // <li >{blog.title}</li>
           )
         })
       }

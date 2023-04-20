@@ -1,3 +1,4 @@
+import { Button, Card } from 'antd'
 import { useState } from 'react'
 
 const BlogForm = ({ addNewBlog }) => {
@@ -19,18 +20,26 @@ const BlogForm = ({ addNewBlog }) => {
   }
 
   return (
-    <form onSubmit={addBlog}>
-      <div>
-        title<input name="title" value={blogTitle} onChange={ event => setBlogTitle(event.target.value) } />
-      </div>
-      <div>
-        author<input name="author" value={blogAuthor} onChange={ event => setBlogAuthor(event.target.value) } />
-      </div>
-      <div>
-        url<input name="url" value={blogUrl} onChange={ event => setBlogUrl(event.target.value) } />
-      </div>
-      <button type="submit">create</button>
-    </form>
+    <Card style={{ maxWidth: '50vw' }}
+      actions={[
+        <Button key="create" type="primary" onClick={addBlog}>Create</Button>
+      ]}
+    >
+      <form className="blog-form">
+        <div className='form-fld'>
+          <span className='label'>Title:</span>
+          <input name="title" value={blogTitle} onChange={ event => setBlogTitle(event.target.value) } />
+        </div>
+        <div className='form-fld'>
+          <span className='label'>Author:</span>
+          <input name="author" value={blogAuthor} onChange={ event => setBlogAuthor(event.target.value) } />
+        </div>
+        <div className='form-fld'>
+          <span className='label'>URL:</span>
+          <input name="url" value={blogUrl} onChange={ event => setBlogUrl(event.target.value) } />
+        </div>
+      </form>
+    </Card>
   )
 }
 
