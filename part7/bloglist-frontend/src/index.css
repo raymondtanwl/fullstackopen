@@ -30,3 +30,35 @@
   border: 1px solid black;
   margin-bottom: 5px;
 }
+
+
+/* ************** */
+.login-card {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form-fld {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.main-content {
+  padding: 16px;
+}
+
+.blog-list {
+  margin: 0 0 16px;
+}
+
+.blog-detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

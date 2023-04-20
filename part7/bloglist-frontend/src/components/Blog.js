@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { List } from 'antd'
 import { useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import LoginContext from '../context/loginContext'
@@ -23,30 +24,46 @@ const Blog = ({ blog, addLikes, removeBlog }) => {
     return (blog.user.username === loginPayload.username)
   }
 
+  // let result = (
+  //   <div key={blog.id} className="blog-item">
+  //     <div className="title">
+  //       <Link to={`/blogs/${blog.id}`}>{ blog.title }</Link>
+  //       {/* <button className="btn-view" onClick={ () => setDetailVisible(!detailVisible) }>
+  //         { detailVisible ? 'hide' : 'view' }
+  //       </button> */}
+  //     </div>
+  //     {/* <div className="blog-details" style={ detailVisible ? showWhenVisible : hideWhenVisible }>
+  //       <div className="blog-url">
+  //         <a href={ blog.url }>{ blog.url }</a>
+  //       </div>
+  //       <div className="blog-likes">
+  //         likes { numOfLikes } <button className="btn-like" onClick={processLikes}>like</button>
+  //       </div>
+  //       <div className="blog-author">
+  //         { blog.author }
+  //       </div>
+  //       <button className="btn-remove" style={ postCreatedByUser() ? showWhenVisible : hideWhenVisible }
+  //         onClick={ () => { removeBlog(blog) } }>
+  //           remove
+  //       </button>
+  //     </div> */}
+  //   </div>
+  // )
+
   let result = (
-    <div key={blog.id} className="blog-item">
-      <div className="title">
-        <Link to={`/blogs/${blog.id}`}>{ blog.title }</Link>
-        {/* <button className="btn-view" onClick={ () => setDetailVisible(!detailVisible) }>
-          { detailVisible ? 'hide' : 'view' }
-        </button> */}
-      </div>
-      {/* <div className="blog-details" style={ detailVisible ? showWhenVisible : hideWhenVisible }>
-        <div className="blog-url">
-          <a href={ blog.url }>{ blog.url }</a>
-        </div>
-        <div className="blog-likes">
-          likes { numOfLikes } <button className="btn-like" onClick={processLikes}>like</button>
-        </div>
-        <div className="blog-author">
-          { blog.author }
-        </div>
-        <button className="btn-remove" style={ postCreatedByUser() ? showWhenVisible : hideWhenVisible }
-          onClick={ () => { removeBlog(blog) } }>
-            remove
-        </button>
-      </div> */}
-    </div>
+    <List
+      size="large"
+      className='blog-list'
+      bordered
+      dataSource={[blog]}
+      renderItem={(b) => (
+        <List.Item>
+          <List.Item.Meta
+            title={<Link to={`/blogs/${b.id}`}>{b.title}</Link>}
+          />
+        </List.Item>
+      )}
+    />
   )
 
   return result

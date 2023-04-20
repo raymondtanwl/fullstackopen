@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { Button, Card } from 'antd'
 import { useState, useEffect, useRef, useContext } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import {
@@ -10,7 +11,7 @@ import BlogDetail from './components/BlogDetail'
 import BlogForm from './components/BlogForm'
 import Blogs from './components/Blogs'
 import LoginForm from './components/Login'
-import NavMenu from './components/NavMenu'
+import NavMenu from './components/NavMenu/NavMenu'
 import Notification, { EnumNotifType } from './components/Notification'
 import Togglable from './components/Togglable'
 import UserDetail from './components/UserDetail'
@@ -30,78 +31,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   // const [user, setUser] = useState(null)
   // const blogFormRef = useRef()
-
-  // // #region Blogs
-  // const handleAddBlog = (blog) => {
-  //   console.log('handleAddBlog')
-  //   addBlogMutation.mutate(blog)
-  // }
-
-  // const addBlogMutation = useMutation(blogService.create, {
-  //   onSuccess: (newBlog) => {
-  //     // console.log('useMutation addBlogMutation onSuccess', newBlog)
-  //     // the name/key should be same as the one defined in useQuery('blogs')
-  //     queryClient.invalidateQueries('blogs')
-  //     const notifPayload = {
-  //       message: `A new blog ${newBlog.title} by ${newBlog.author} added`,
-  //       type: EnumNotifType.SuccessNotif,
-  //     }
-  //     setNotification(notifDispatch, notifPayload)
-  //   }
-  // })
-
-  // const handleLikeBlog = (blog) => {
-  //   console.log('handleLikeBlog', blog)
-  //   const newBlog = {
-  //     title: blog.title,
-  //     author: blog.author,
-  //     url: blog.url,
-  //     likes: blog.likes,
-  //     user: blog.user.id
-  //   }
-  //   // mutation func can only take one param, therefore we passing it as an object
-  //   likeBlogMutation.mutate({ id: blog.id, newObject: newBlog })
-  // }
-
-  // const likeBlogMutation = useMutation(blogService.update, {
-  //   onSuccess: (updatedBlog) => {
-  //     // console.log('useMutation likeBlogMutation onSuccess', updatedBlog)
-  //     // the name/key should be same as the one defined in useQuery('blogs')
-  //     queryClient.invalidateQueries('blogs')
-  //     const notifPayload = {
-  //       message: `Blog ${updatedBlog.title} by ${updatedBlog.author} is liked`,
-  //       type: EnumNotifType.SuccessNotif,
-  //     }
-  //     setNotification(notifDispatch, notifPayload)
-  //   }
-  // })
-
-  // const handleRemoveBlog = (blog) => {
-  //   console.log('handleRemoveBlog', blog)
-  //   if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-  //     removeBlogMutation.mutate(blog.id)
-  //   }
-  // }
-
-  // const removeBlogMutation = useMutation(blogService.remove, {
-  //   onSuccess: (removedBlog) => {
-  //     // console.log('useMutation removeBlogMutation onSuccess', removedBlog)
-  //     // the name/key should be same as the one defined in useQuery('blogs')
-  //     queryClient.invalidateQueries('blogs')
-  //     const notifPayload = {
-  //       message: `Blog ${removedBlog.title} by ${removedBlog.author} is removed`,
-  //       type: EnumNotifType.SuccessNotif,
-  //     }
-  //     setNotification(notifDispatch, notifPayload)
-  //   }
-  // })
-
-  // const blogs = useQuery('blogs', blogService.getAll, {
-  //   refetchOnWindowFocus: false,
-  //   retry: 1
-  // })
-  // console.log('query res', blogs)
-  // // #endregion Blogs
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedInUser')
@@ -151,18 +80,23 @@ const App = () => {
 
     return (
       <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>log in</button>
+        <div style={hideWhenVisible} className="login-card">
+          <Card>
+            <h1>Blog App</h1>
+            <Button type="primary" onClick={() => setLoginVisible(true)}>Log in</Button>
+          </Card>
         </div>
-        <div style={showWhenVisible}>
+        <div style={showWhenVisible} className="login-card">
+
           <LoginForm
             username={username}
             password={password}
             handleUsernameChange={({ target }) => setUsername(target.value)}
             handlePasswordChange={({ target }) => setPassword(target.value)}
             handleSubmit={handleLogin}
+            handleCancel={() => setLoginVisible(false)}
           />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
+
         </div>
       </div>
     )
@@ -172,46 +106,21 @@ const App = () => {
 
   return (
     <Router>
-      <div>
+      <>
         <NavMenu />
+        <div className='main-content'>
+          <h2>blog app</h2>
 
-        <h2>blog app</h2>
+          <Notification />
 
-        <Notification />
-
-        {/* { loginPayload &&
-          <div>
-            <p>{loginPayload.name} logged in</p>
-            <button onClick={handleLogout}>logout</button>
-          </div>
-        } */}
-
-        {/* { loginPayload &&
-          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm addNewBlog={handleAddBlog}></BlogForm>
-          </Togglable>
-        } */}
-
-        {/* {
-          loginPayload &&
-          <Blogs />
-          // loginPayload && blogs.data.sort((a, b) => b.likes - a.likes)
-          //   .map(blog =>
-          //     <Blog
-          //       key={ blog.id } blog={ blog }
-          //       addLikes={handleLikeBlog}
-          //       removeBlog={handleRemoveBlog}
-          //     />
-          //   )
-        } */}
-
-        <Routes>
-          <Route path="/" element={<Blogs />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/users/:id" element={<UserDetail />} />
-          <Route path="/blogs/:id" element={<BlogDetail />} />
-        </Routes>
-      </div>
+          <Routes>
+            <Route path="/" element={<Blogs />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<UserDetail />} />
+            <Route path="/blogs/:id" element={<BlogDetail />} />
+          </Routes>
+        </div>
+      </>
     </Router>
 
   )

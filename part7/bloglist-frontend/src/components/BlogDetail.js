@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { useContext, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import LoginContext from '../context/loginContext'
 import NotifContext, { setNotification } from '../context/notifContext'
 import { EnumNotifType } from './Notification'
 import blogService from '../services/blogs'
-import Comments from './Comment'
+import Comments from './Comment/Comment'
+import { Button } from 'antd'
+import { LikeOutlined } from '@ant-design/icons'
+
 
 const BlogDetail = () => {
   // not specifying the first notifPayload param will cause the dispatch to be null
@@ -111,15 +114,22 @@ const BlogDetail = () => {
   const blog = blogRes.data
 
   return (
-    <div>
+    <div className='blog-detail-container'>
       <h1>{blog.title}</h1>
-      <a href={blog.url}>{blog.url}</a>
-      <div>{blog.likes} likes <button className="btn-like" onClick={processLikes}>like</button></div>
-      <div>added by {blog.author}</div>
-      <button className="btn-remove" style={ postCreatedByUser() ? showWhenVisible : hideWhenVisible }
-        onClick={ () => { handleRemoveBlog(blog) } }>
-          remove
-      </button>
+      <div>
+        <Link to={`${blog.url}`}>{blog.url}</Link>
+      </div>
+      <div>
+        {blog.likes} likes <Button type="primary" icon={<LikeOutlined />} className="btn-like" onClick={processLikes}>Like</Button>
+      </div>
+      <div>Added by {blog.author}</div>
+      <div>
+        <Button type="primary" danger className="btn-remove" style={ postCreatedByUser() ? showWhenVisible : hideWhenVisible }
+          onClick={ () => { handleRemoveBlog(blog) } }>
+          Remove
+        </Button>
+      </div>
+
 
       <Comments comments={blog.comments} handleAddComment={addComment}/>
 

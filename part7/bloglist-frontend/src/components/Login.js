@@ -1,38 +1,46 @@
+import { Button, Card } from 'antd'
 import PropTypes from 'prop-types'
 
 const LoginForm = ({
   handleSubmit,
+  handleCancel,
   handleUsernameChange,
   handlePasswordChange,
   username,
   password
 }) => {
   return (
-    <div>
+    <Card
+      actions={[
+        <Button key="login" type="primary" id="btn-login" onClick={handleSubmit}>Login</Button>,
+        <Button key="cancel" type="default" onClick={handleCancel}>Cancel</Button>
+      ]}
+    >
       <h2>Login</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          username
+      <form>
+        <div className='login-form-fld'>
+          Username:
           <input
             type="text"
+            placeholder='username'
             value={username}
             name="Username"
             onChange={handleUsernameChange}
           />
         </div>
-        <div>
-          password
+        <div className='login-form-fld'>
+          Password:
           <input
             type="password"
+            placeholder='********'
             value={password}
             name="Password"
             onChange={handlePasswordChange}
           />
         </div>
-        <button id="btn-login" type="submit">login</button>
       </form>
-    </div>
+    </Card>
   )
 }
 
